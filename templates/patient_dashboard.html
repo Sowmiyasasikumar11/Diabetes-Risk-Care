@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ t('common.patient_dashboard') }} | {{ t('app.title') }}{% endblock %}
+{% block content %}
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <p class="eyebrow">{{ t('common.patient_portal') }}</p>
+        <h2>{{ t('common.my_workspace') }}</h2>
+        <nav class="side-nav">
+            <a class="active" href="{{ url_for('patient_dashboard') }}">{{ t('nav.dashboard') }}</a>
+            <a href="{{ url_for('risk_assessment') }}">{{ t('nav.risk_assessment') }}</a>
+            <a href="{{ url_for('patient_history') }}">{{ t('nav.prediction_history') }}</a>
+            <a href="{{ url_for('logout') }}">{{ t('nav.logout') }}</a>
+        </nav>
+    </aside>
+    <section class="dashboard-content">
+        {% if history %}
+            <div class="section-heading"><div><p class="eyebrow">{{ t('common.your_records') }}</p><h1>{{ t('common.history') }}</h1></div></div>
+            <div class="table-card">
+                {% if predictions %}
+                <table><thead><tr><th>{{ t('common.assessment_date') }}</th><th>{{ t('common.prediction') }}</th><th>{{ t('common.model_confidence') }}</th></tr></thead><tbody>
+                    {% for item in predictions %}<tr><td>{{ item.prediction_date }}</td><td><span class="status status-{{ item.prediction }}">{{ t('status.high_risk') if item.prediction else t('status.low_risk') }}</span></td><td>{{ '%.2f'|format(item.probability * 100) }}%</td></tr>{% endfor %}
+                </tbody></table>
+                {% else %}<div class="empty-state">{{ t('common.no_records') }}</div>{% endif %}
+            </div>
+        {% elif placeholder %}
+            <div class="section-heading"><div><p class="eyebrow">{{ t('common.risk_assessment') }}</p><h1>{{ t('common.assessment_coming_next') }}</h1><p>{{ t('common.future_workflow') }}</p></div></div>
+        {% else %}
+            <div class="section-heading"><div><p class="eyebrow">{{ t('common.patient_dashboard') }}</p><h1>{{ t('common.good_to_see', name=profile.patient_name) }}</h1><p>{{ t('common.personal_workspace_ready') }}</p></div></div>
+            <div class="stat-grid">
+                <article class="stat-card"><span>{{ t('common.patient_name') }}</span><strong>{{ profile.patient_name }}</strong></article>
+                <article class="stat-card"><span>{{ t('common.age') }}</span><strong>{{ profile.age }}</strong></article>
+                <article class="stat-card"><span>{{ t('common.gender') }}</span><strong>{{ profile.gender }}</strong></article>
+                <article class="stat-card"><span>{{ t('common.previous_predictions') }}</span><strong>{{ prediction_count }}</strong></article>
+            </div>
+            <div class="content-grid">
+                <article class="panel"><p class="eyebrow">{{ t('common.latest_prediction') }}</p><h2>{% if latest_prediction %}{{ t('status.high_risk') if latest_prediction.prediction else t('status.low_risk') }}{% else %}{{ t('common.not_available') }}{% endif %}</h2>{% if latest_prediction %}<p>{{ t('common.model_confidence') }}: {{ '%.2f'|format(latest_prediction.probability * 100) }}%</p><p class="muted">{{ latest_prediction.prediction_date }}</p>{% else %}<p class="muted">{{ t('common.complete_assessment') }}</p>{% endif %}</article>
+                <article class="panel panel-accent"><p class="eyebrow">{{ t('common.next_step') }}</p><h2>{{ t('common.take_assessment') }}</h2><p>{{ t('common.personal_workspace_ready') }}</p><a class="button button-primary" href="{{ url_for('risk_assessment') }}">{{ t('common.open_assessment') }}</a></article>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

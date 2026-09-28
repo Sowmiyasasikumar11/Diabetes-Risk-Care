@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.admin_reports') }} | {{ t('app.title') }}{% endblock %}
+{% block content %}
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <p class="eyebrow">{{ t('admin.control_center') }}</p>
+        <h2>{{ t('admin.control_center') }}</h2>
+        <nav class="side-nav">
+            <a href="{{ url_for('admin_dashboard') }}">{{ t('nav.admin_dashboard') }}</a>
+            <a href="{{ url_for('admin_patients') }}">{{ t('nav.admin_patients') }}</a>
+            <a href="{{ url_for('admin_predictions') }}">{{ t('nav.admin_predictions') }}</a>
+            <a href="{{ url_for('admin_analytics') }}">{{ t('nav.admin_analytics') }}</a>
+            <a class="active" href="{{ url_for('admin_reports') }}">{{ t('nav.admin_reports') }}</a>
+            <a href="{{ url_for('logout') }}">{{ t('nav.logout') }}</a>
+        </nav>
+    </aside>
+    <section class="dashboard-content">
+        <div class="section-heading"><div><p class="eyebrow">{{ t('nav.admin_reports') }}</p><h1>{{ t('admin.records_ready') }}</h1><p>{{ t('admin.download_info') }}</p></div><div class="report-actions"><a class="button button-primary" href="{{ url_for('export_patients') }}">{{ t('admin.export_patient_records') }}</a><a class="button button-secondary" href="{{ url_for('export_predictions') }}">{{ t('admin.export_prediction_records') }}</a></div></div>
+        <article class="table-card report-table"><div class="panel-heading"><div><p class="eyebrow">{{ t('common.patient_records') }}</p><h2>{{ t('admin.registered_patients') }}</h2></div><span class="table-count">{{ t('admin.records_count', count=patients|length) }}</span></div>{% if patients %}<div class="table-scroll"><table><thead><tr><th>{{ t('admin.patient_name') }}</th><th>{{ t('admin.username') }}</th><th>{{ t('common.age') }}</th><th>{{ t('common.gender') }}</th><th>{{ t('admin.registration_date') }}</th></tr></thead><tbody>{% for patient in patients %}<tr><td>{{ patient.patient_name }}</td><td>{{ patient.username }}</td><td>{{ patient.age }}</td><td>{{ patient.gender }}</td><td>{{ patient.created_at }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state">{{ t('admin.no_patient_accounts') }}</div>{% endif %}</article>
+        <article class="table-card report-table"><div class="panel-heading"><div><p class="eyebrow">{{ t('common.prediction_records') }}</p><h2>{{ t('admin.assessment_history') }}</h2></div><span class="table-count">{{ t('admin.records_count', count=predictions|length) }}</span></div>{% if predictions %}<div class="table-scroll"><table><thead><tr><th>{{ t('admin.patient_name') }}</th><th>{{ t('common.prediction') }}</th><th>{{ t('common.model_confidence') }}</th><th>{{ t('admin.prediction_date') }}</th></tr></thead><tbody>{% for item in predictions %}<tr><td>{{ item.patient_name }}</td><td><span class="status status-{{ item.prediction }}">{{ t('status.high_risk') if item.prediction else t('status.low_risk') }}</span></td><td>{{ '%.2f'|format(item.probability * 100) }}%</td><td>{{ item.prediction_date }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state">{{ t('admin.no_prediction_records') }}</div>{% endif %}</article>
+    </section>
+</div>
+{% endblock %}

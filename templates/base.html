@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ t('app.title') }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="{{ url_for('index') }}">
+            <span class="brand-mark">DR</span>
+            <span>{{ t('app.title') }}</span>
+        </a>
+        <div class="header-right">
+            <div class="language-switch" aria-label="{{ t('nav.language') }}">
+                <a href="{{ url_for('set_language', lang='en', next=request.path) }}" class="lang-option {{ 'active' if current_lang == 'en' else '' }}">{{ t('common.language_toggle_en') }}</a>
+                <span class="lang-divider">|</span>
+                <a href="{{ url_for('set_language', lang='ta', next=request.path) }}" class="lang-option {{ 'active' if current_lang == 'ta' else '' }}">{{ t('common.language_toggle_ta') }}</a>
+            </div>
+            {% if current_user %}
+            <div class="header-user">
+                <span>{{ current_user }}</span>
+                <a class="button button-quiet" href="{{ url_for('logout') }}">{{ t('nav.logout') }}</a>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="page-shell">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ t('auth.register') }} | {{ t('app.title') }}{% endblock %}
+{% block content %}
+<section class="auth-layout">
+    <div class="auth-intro">
+        <p class="eyebrow">{{ t('auth.patient_access') }}</p>
+        <h1>{{ t('auth.start_private_workspace') }}</h1>
+        <p>{{ t('auth.create_patient_account') }}</p>
+    </div>
+    <div class="auth-card">
+        <p class="eyebrow">{{ t('auth.patient_registration') }}</p>
+        <h2>{{ t('auth.create_account') }}</h2>
+        <form method="post" class="form-stack">
+            <label>{{ t('auth.patient_name') }}<input type="text" name="patient_name" required></label>
+            <div class="form-row">
+                <label>{{ t('form.age') }}<input type="number" name="age" min="1" required></label>
+                <label>{{ t('form.gender') }}<input type="text" name="gender" required></label>
+            </div>
+            <label>{{ t('auth.username') }}<input type="text" name="username" autocomplete="username" required></label>
+            <label>{{ t('auth.password') }}<input type="password" name="password" minlength="8" autocomplete="new-password" required></label>
+            <label>{{ t('auth.confirm_password') }}<input type="password" name="confirm_password" minlength="8" autocomplete="new-password" required></label>
+            <button class="button button-primary" type="submit">{{ t('auth.register') }}</button>
+        </form>
+        <p class="form-note">{{ t('auth.already_registered') }} <a href="{{ url_for('login') }}">{{ t('auth.sign_in') }}</a></p>
+    </div>
+</section>
+{% endblock %}

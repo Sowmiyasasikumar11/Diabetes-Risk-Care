@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ t('result.assessment_complete') }} | {{ t('app.title') }}{% endblock %}
+{% block content %}
+<section class="result-layout">
+    <div class="result-card">
+        <p class="eyebrow">{{ t('result.assessment_complete') }}</p>
+        <h1>{{ t('result.diabetes_risk_result') }}</h1>
+        <div class="result-status result-status-{{ prediction.prediction }}">{{ t('status.high_risk_label') if prediction.prediction else t('status.low_risk_label') }}</div>
+        <div class="probability-block"><span>{{ t('common.model_confidence') }}</span><strong>{{ '%.2f'|format(prediction.probability * 100) }}%</strong></div>
+        <p class="result-date">{{ t('result.assessed_on', date=prediction.prediction_date) }}</p>
+        <p class="disclaimer">{{ t('result.disclaimer') }}</p>
+        <div class="result-actions"><a class="button button-primary" href="{{ url_for('patient_dashboard') }}">{{ t('result.back_dashboard') }}</a><a class="button button-secondary" href="{{ url_for('patient_history') }}">{{ t('result.view_history') }}</a><a class="button button-quiet" href="{{ url_for('risk_assessment') }}">{{ t('result.new_assessment') }}</a></div>
+    </div>
+</section>
+{% endblock %}

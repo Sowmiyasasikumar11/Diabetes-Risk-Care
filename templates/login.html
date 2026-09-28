@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ t('auth.sign_in') }} | {{ t('app.title') }}{% endblock %}
+{% block content %}
+<section class="auth-layout">
+    <div class="auth-intro">
+        <p class="eyebrow">{{ t('app.title') }}</p>
+        <h1>{{ t('auth.start_private_workspace') }}</h1>
+        <p>{{ t('auth.create_patient_account') }}</p>
+    </div>
+    <div class="auth-card">
+        <p class="eyebrow">{{ t('auth.welcome_back') }}</p>
+        <h2>{{ t('auth.sign_in') }}</h2>
+        <form method="post" class="form-stack">
+            <label>{{ t('auth.username') }}<input type="text" name="username" autocomplete="username" required></label>
+            <label>{{ t('auth.password') }}<input type="password" name="password" autocomplete="current-password" required></label>
+            <button class="button button-primary" type="submit">{{ t('auth.sign_in') }}</button>
+        </form>
+        <p class="form-note">{{ t('auth.new_patient') }} <a href="{{ url_for('register') }}">{{ t('auth.create_account') }}</a></p>
+    </div>
+</section>
+{% endblock %}

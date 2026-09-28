@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ t('common.risk_assessment') }} | {{ t('app.title') }}{% endblock %}
+{% block content %}
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <p class="eyebrow">{{ t('common.patient_portal') }}</p>
+        <h2>{{ t('common.my_workspace') }}</h2>
+        <nav class="side-nav">
+            <a href="{{ url_for('patient_dashboard') }}">{{ t('nav.dashboard') }}</a>
+            <a class="active" href="{{ url_for('risk_assessment') }}">{{ t('nav.risk_assessment') }}</a>
+            <a href="{{ url_for('patient_history') }}">{{ t('nav.prediction_history') }}</a>
+            <a href="{{ url_for('logout') }}">{{ t('nav.logout') }}</a>
+        </nav>
+    </aside>
+    <section class="dashboard-content">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">{{ t('common.private_assessment') }}</p>
+                <h1>{{ t('common.risk_assessment') }}</h1>
+                <p>{{ t('auth.enter_health_info') }}</p>
+            </div>
+        </div>
+        <section class="report-upload">
+            <div>
+                <p class="eyebrow">{{ t('auth.upload_report') }}</p>
+                <p class="report-description">{{ t('auth.upload_report_desc') }}</p>
+            </div>
+            <form method="post" action="{{ url_for('upload_report') }}" enctype="multipart/form-data" class="report-upload-form">
+                <label for="medical_report">{{ t('auth.file_label') }}<span class="file-input"><input id="medical_report" type="file" name="medical_report" accept=".pdf,.jpg,.jpeg,.png" required></span></label>
+                <button class="button button-secondary" type="submit" name="upload_action" value="upload">{{ t('auth.upload_button') }}</button>
+            </form>
+            {% if extracted_values %}
+            <div class="extracted-values" role="status">
+                <strong>{{ t('auth.values_extracted') }}</strong>
+                <div class="extracted-list">{% for field, value in extracted_values.items() %}<span>{{ field.replace('_', ' ').title() }}: {{ value }}</span>{% endfor %}</div>
+            </div>
+            {% endif %}
+        </section>
+        <form method="post" action="{{ url_for('risk_assessment') }}" class="assessment-card">
+            <div class="assessment-section">
+                <p class="eyebrow">{{ t('form.basic_info') }}</p>
+                <div class="assessment-grid">
+                    <label>{{ t('form.age') }}<input type="number" name="age" min="1" step="1" value="{{ form_data.get('age', '') }}" required></label>
+                    <label>{{ t('form.gender') }}<select name="gender" required><option value="">{{ t('form.gender_select') }}</option><option value="Female" {% if form_data.get('gender') == 'Female' %}selected{% endif %}>{{ t('form.gender_female') }}</option><option value="Male" {% if form_data.get('gender') == 'Male' %}selected{% endif %}>{{ t('form.gender_male') }}</option><option value="Other" {% if form_data.get('gender') == 'Other' %}selected{% endif %}>{{ t('form.gender_other') }}</option></select></label>
+                    <label>{{ t('form.bmi') }}<input type="number" name="bmi" min="0.01" step="0.01" value="{{ form_data.get('bmi', '') }}" required></label>
+                    <label>{{ t('form.pregnancies') }}<input type="number" name="pregnancies" min="0" step="1" value="{{ form_data.get('pregnancies', '') }}" required></label>
+                </div>
+            </div>
+            <div class="assessment-section">
+                <p class="eyebrow">{{ t('form.clinical_measurements') }}</p>
+                <div class="assessment-grid">
+                    <label>{{ t('form.blood_glucose') }}<input type="number" name="blood_glucose_level" min="0.01" step="0.01" value="{{ form_data.get('blood_glucose_level', '') }}" required></label>
+                    <label>{{ t('form.hba1c') }}<input type="number" name="hba1c_level" min="0.01" step="0.01" value="{{ form_data.get('hba1c_level', '') }}" required></label>
+                </div>
+            </div>
+            <div class="assessment-section">
+                <p class="eyebrow">{{ t('form.health_history') }}</p>
+                <div class="assessment-grid">
+                    <fieldset><legend>{{ t('form.hypertension') }}</legend><label class="radio-option"><input type="radio" name="hypertension" value="0" {% if form_data.get('hypertension') == '0' %}checked{% endif %} required>{{ t('form.no') }}</label><label class="radio-option"><input type="radio" name="hypertension" value="1" {% if form_data.get('hypertension') == '1' %}checked{% endif %}>{{ t('form.yes') }}</label></fieldset>
+                    <fieldset><legend>{{ t('form.heart_disease') }}</legend><label class="radio-option"><input type="radio" name="heart_disease" value="0" {% if form_data.get('heart_disease') == '0' %}checked{% endif %} required>{{ t('form.no') }}</label><label class="radio-option"><input type="radio" name="heart_disease" value="1" {% if form_data.get('heart_disease') == '1' %}checked{% endif %}>{{ t('form.yes') }}</label></fieldset>
+                    <label>{{ t('form.smoking_history') }}<select name="smoking_history" required><option value="">{{ t('form.select_history') }}</option><option value="never" {% if form_data.get('smoking_history') == 'never' %}selected{% endif %}>{{ t('form.never') }}</option><option value="former" {% if form_data.get('smoking_history') == 'former' %}selected{% endif %}>{{ t('form.former') }}</option><option value="current" {% if form_data.get('smoking_history') == 'current' %}selected{% endif %}>{{ t('form.current') }}</option></select></label>
+                </div>
+            </div>
+            <div class="assessment-actions"><p class="muted">{{ t('common.educational_only') }}</p><button class="button button-primary" type="submit" name="assessment_action" value="predict">{{ t('auth.submit') }}</button></div>
+        </form>
+    </section>
+</div>
+{% endblock %}

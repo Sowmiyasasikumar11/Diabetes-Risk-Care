@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ t('admin.analytics') }} | {{ t('app.title') }}{% endblock %}
+{% block content %}
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <p class="eyebrow">{{ t('admin.control_center') }}</p>
+        <h2>{{ t('admin.control_center') }}</h2>
+        <nav class="side-nav">
+            <a href="{{ url_for('admin_dashboard') }}">{{ t('nav.admin_dashboard') }}</a>
+            <a href="{{ url_for('admin_patients') }}">{{ t('nav.admin_patients') }}</a>
+            <a href="{{ url_for('admin_predictions') }}">{{ t('nav.admin_predictions') }}</a>
+            <a class="active" href="{{ url_for('admin_analytics') }}">{{ t('nav.admin_analytics') }}</a>
+            <a href="{{ url_for('admin_reports') }}">{{ t('nav.admin_reports') }}</a>
+            <a href="{{ url_for('logout') }}">{{ t('nav.logout') }}</a>
+        </nav>
+    </aside>
+    <section class="dashboard-content">
+        <div class="section-heading"><div><p class="eyebrow">{{ t('admin.analytics') }}</p><h1>{{ t('admin.analytics_heading') }}</h1><p>{{ t('admin.analytics_desc') }}</p></div></div>
+        <div class="stat-grid">
+            <article class="stat-card"><span>{{ t('admin.patient_count') }}</span><strong>{{ stats.patients }}</strong></article>
+            <article class="stat-card"><span>{{ t('admin.prediction_count') }}</span><strong>{{ stats.predictions }}</strong></article>
+            <article class="stat-card stat-high"><span>{{ t('admin.high_risk') }}</span><strong>{{ stats.high_risk }}</strong></article>
+            <article class="stat-card stat-low"><span>{{ t('admin.low_risk') }}</span><strong>{{ stats.low_risk }}</strong></article>
+        </div>
+        <div class="analytics-grid">
+            <article class="panel analytics-panel"><p class="eyebrow">{{ t('admin.outcome_distribution') }}</p><h2>{{ t('admin.high_risk_vs_low_risk') }}</h2><div class="chart-bars"><div class="chart-row"><div class="chart-label"><span>{{ t('status.high_risk') }}</span><strong>{{ stats.high_risk }}</strong></div><div class="chart-track"><span class="chart-fill chart-fill-high" style="width: {{ (stats.high_risk / stats.predictions * 100) if stats.predictions else 0 }}%"></span></div></div><div class="chart-row"><div class="chart-label"><span>{{ t('status.low_risk') }}</span><strong>{{ stats.low_risk }}</strong></div><div class="chart-track"><span class="chart-fill chart-fill-low" style="width: {{ (stats.low_risk / stats.predictions * 100) if stats.predictions else 0 }}%"></span></div></div></div></article>
+            <article class="panel analytics-panel"><p class="eyebrow">{{ t('admin.prediction_activity') }}</p><h2>{{ t('admin.recent_activity') }}</h2>{% if activity %}<div class="activity-list">{% for item in activity %}<div class="activity-row"><span>{{ item.date }}</span><div class="activity-track"><span style="width: {{ item.width }}%"></span></div><strong>{{ item.count }}</strong></div>{% endfor %}</div>{% else %}<div class="empty-state">{{ t('admin.no_activity') }}</div>{% endif %}</article>
+        </div>
+        <article class="table-card analytics-table"><div class="panel-heading"><div><p class="eyebrow">{{ t('admin.live_activity') }}</p><h2>{{ t('admin.recent_prediction_activity') }}</h2></div></div>{% if recent_predictions %}<div class="table-scroll"><table><thead><tr><th>{{ t('common.patient_name') }}</th><th>{{ t('admin.username') }}</th><th>{{ t('common.prediction') }}</th><th>{{ t('common.model_confidence') }}</th><th>{{ t('admin.prediction_date') }}</th></tr></thead><tbody>{% for item in recent_predictions %}<tr><td>{{ item.patient_name }}</td><td>{{ item.username }}</td><td><span class="status status-{{ item.prediction }}">{{ t('status.high_risk') if item.prediction else t('status.low_risk') }}</span></td><td>{{ '%.2f'|format(item.probability * 100) }}%</td><td>{{ item.prediction_date }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state">{{ t('admin.no_activity') }}</div>{% endif %}</article>
+    </section>
+</div>
+{% endblock %}
