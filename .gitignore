@@ -12,3 +12,6 @@ database/*.sqlite3
 uploads/
 instance/
 *.log
+
+figures/
+outputs/
